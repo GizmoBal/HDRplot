@@ -109,7 +109,7 @@ def HDRplot(
         subTitleHDR2 = ""
     if subTitleHDR1 is None and subTitleHDR2 is None:
         subTitleHDR1 = ""
-        subTitleHDR2 = "No HDR properties in original file"
+        subTitleHDR2 = "No HDR metadata in original file"
     if subTitleDV1 is None and subTitleDV2 is not None:
         subTitleDV1 = ""
     if subTitleDV2 is None and subTitleDV1 is not None:
