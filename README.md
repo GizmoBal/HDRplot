@@ -15,8 +15,8 @@ This script needs a working installation of `VapourSynth` with the `ffms2` index
 
 ## Screenshots
 
-![Barbie-remux](./screenshots/BarbieDisc.png)
-![Barbie-webdl](./screenshots/Barbie.png)
+![Barbie-remux](./screenshots/HDRplot-BarbieDisc.png)
+![Barbie-webdl](./screenshots/HDRplot-Barbie.png)
 
 ## Features
 
