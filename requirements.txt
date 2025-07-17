@@ -1,0 +1,5 @@
+vapoursynth
+awsmfunc
+pymediainfo
+matplotlib
+colorama
