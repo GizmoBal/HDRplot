@@ -13,11 +13,6 @@ you sometimes need to measure them. The function `measure_hdr10_content_light_le
 This script needs a working installation of `VapourSynth` with the `ffms2` indexer. It also requires to have compiled the `vs-placebo` plugin with option `dovi`. Finally, `ffmpeg`, `dovi_tool` and `mediainfo` must be on path.
 
 
-## Screenshots
-
-![Barbie-remux](./screenshots/HDRplot-BarbieDisc.png)
-![Barbie-webdl](./screenshots/HDRplot-Barbie.png)
-
 ## Features
 
 * Can measure the HDR grades of any HDR10/HDR10+/DoVi hevc/mkv video file.
@@ -25,3 +20,10 @@ This script needs a working installation of `VapourSynth` with the `ffms2` index
 * Plot the CLL/FALL values of each frame. Compute maxCLL and maxFALL.
 * Can plot the L1 metadata of a DoVi video file.
 * Extract the Master Display Luminance Parameters and the main DoVi parameters and print them on the plot.
+
+
+## Screenshots
+
+![Barbie-remux](./screenshots/HDRplot-BarbieDisc.png)
+![Barbie-webdl](./screenshots/HDRplot-Barbie.png)
+![Barbie-webdl-L1](./screenshots/HDRplot-BarbieL1.png)
