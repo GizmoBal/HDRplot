@@ -82,7 +82,7 @@ def HDRplot(
         result = subprocess.run('dovi_tool info -s RPU-temp.bin', stdout=subprocess.PIPE, shell=True)
         doviSummary = [x.strip() for x in result.stdout.decode().split('\n')]
         if L1:
-            subprocess.run('dovi_tool export -i RPU-itunes.bin -d all=RPU-temp.json', shell=True)
+            subprocess.run('dovi_tool export -i RPU-temp.bin -d all=RPU-temp.json', shell=True)
             with open('RPU-temp.json') as file:
                 RPU = json.load(file)
             subprocess.run('rm RPU-temp.json', shell=True)
@@ -140,7 +140,7 @@ def HDRplot(
     if L1:
         HDRMax = []
         HDRFALL = []
-        for frame in range(len(clip3)):
+        for frame in range(len(HDRclip)):
             max_pq = RPU[frame]["vdr_dm_data"]["cmv29_metadata"]['ext_metadata_blocks'][0]["Level1"]["max_pq"]
             avg_pq = RPU[frame]["vdr_dm_data"]["cmv29_metadata"]['ext_metadata_blocks'][0]["Level1"]["avg_pq"]
             max_nits = awf.st2084_eotf(float(max_pq/4095)) * 10000
