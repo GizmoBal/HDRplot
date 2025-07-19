@@ -22,8 +22,7 @@ def HDRplot(
     top: int = 0,
     bottom: int = 0,
     trimStart: int = 0,
-    trimEnd: int = 0,
-    L1: bool = False
+    trimEnd: int = 0
 ):
     """
     Plot the brightness of each frame of a HDR/DV hevc/hevc video file.
@@ -43,7 +42,6 @@ def HDRplot(
     :param bottom: crop value
     :param trimStart: number of frames to trim at the start of the clip for plotting (useful to sync plots between clips with different numbers of frame)
     :param trimEnd: number ot frames to trim at the end
-    :param L1: whether to plot HDR grade of L1 metadata from the RPY file
     """
 
 
@@ -137,18 +135,19 @@ def HDRplot(
     filename = 'lightLevel-' + fileIdentifier + '.json'
     jsonFile = os.path.abspath(filename)
 
-    if L1:
-        HDRMax = []
-        HDRFALL = []
-        for frame in range(len(HDRclip)):
-            max_pq = RPU[frame]["vdr_dm_data"]["cmv29_metadata"]['ext_metadata_blocks'][0]["Level1"]["max_pq"]
-            avg_pq = RPU[frame]["vdr_dm_data"]["cmv29_metadata"]['ext_metadata_blocks'][0]["Level1"]["avg_pq"]
-            max_nits = awf.st2084_eotf(float(max_pq/4095)) * 10000
-            avg_nits = awf.st2084_eotf(float(avg_pq/4095)) * 10000
-            HDRMax.append(max_nits)
-            HDRFALL.append(avg_nits)
-        lightLevel = [HDRMax, HDRFALL]
-    elif os.path.exists(jsonFile):
+    # if L1:
+    #     HDRMax = []
+    #     HDRFALL = []
+    #     for frame in range(len(HDRclip)):
+    #         max_pq = RPU[frame]["vdr_dm_data"]["cmv29_metadata"]['ext_metadata_blocks'][0]["Level1"]["max_pq"]
+    #         avg_pq = RPU[frame]["vdr_dm_data"]["cmv29_metadata"]['ext_metadata_blocks'][0]["Level1"]["avg_pq"]
+    #         max_nits = awf.st2084_eotf(float(max_pq/4095)) * 10000
+    #         avg_nits = awf.st2084_eotf(float(avg_pq/4095)) * 10000
+    #         HDRMax.append(max_nits)
+    #         HDRFALL.append(avg_nits)
+    #     lightLevel = [HDRMax, HDRFALL]
+    # elif os.path.exists(jsonFile):
+    if os.path.exists(jsonFile):
         with open(jsonFile) as f:
             lightLevel = json.load(f)
     else:
@@ -169,7 +168,8 @@ def HDRplot(
         # Extract HDR data from clip and store them in a double list #
         #------------------------------------------------------------#
 
-        measurements = awf.measure_hdr10_content_light_level(HDRclip, linearized=False)
+        # measurements = awf.measure_hdr10_content_light_level(HDRclip, linearized=False)
+        measurements = awf.measure_hdr10_content_light_level(HDRclip)
 
         maxrgb_pq_values = list(map(lambda m: m.max, measurements))
         fall_pq_values = list(map(lambda m: float(m.fall), measurements))
