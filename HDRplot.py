@@ -155,27 +155,28 @@ def HDRplot(
         # No json file containing the lightLevel data. We have to measure.
         if hdrFormat == hdrFormat == "Dolby Vision":
             # DoVi P5 video. We have to tonemap to HDR before measuring.
+            HDRclip = core.std.SetFrameProp(HDRclip, prop="_ColorRange", intval=0)
             HDRclip = awf.Depth(HDRclip, 16)
             HDRclip = core.placebo.Tonemap(HDRclip, src_csp = 3, dst_csp = 1)
             HDRclip = core.resize.Spline36(HDRclip, range_s="limited", range_in_s="full", dither_type="error_diffusion")
             HDRclip = awf.Depth(HDRclip, 10)
+            HDRclip = core.std.SetFrameProp(HDRclip, prop="_ColorRange", intval=1)
+            HDRclip = core.std.SetFrameProp(HDRclip, prop="_Matrix", intval=9)
+            HDRclip = core.std.SetFrameProp(HDRclip, prop="_Primaries", intval=9)
+            HDRclip = core.std.SetFrameProp(HDRclip, prop="_Transfer", intval=16)
 
         #------------------------------------------------------------#
         # Extract HDR data from clip and store them in a double list #
         #------------------------------------------------------------#
 
-        HDRclip = awf.add_hdr_measurement_props(HDRclip,as_nits=True,percentile=99.99,downscale=False,hlg=False,max_luminance=False,no_planestats=True,compute_hdr10plus=False,linearized=True)
+        measurements = awf.measure_hdr10_content_light_level(HDRclip, linearized=False)
 
-        # HDRclip = core.text.FrameProps(HDRclip)  # this part is meant to show the HDR data in vs-preview
-        # if vspreview.is_preview():
-        #     set_output(HDRclip)
+        maxrgb_pq_values = list(map(lambda m: m.max, measurements))
+        fall_pq_values = list(map(lambda m: float(m.fall), measurements))
 
-        HDRMax = []
-        HDRFALL = []
-        for frame in range(len(HDRclip)):
-            HDRMax.append(HDRclip.get_frame(frame).props['HDRMax'])
-            HDRFALL.append(HDRclip.get_frame(frame).props['HDRFALL'])
-            print(f"\rMeasuring brightness of frame {Fore.BLUE}{frame}{Style.RESET_ALL} out of {len(HDRclip)}...",end='')
+        HDRMax = [awf.st2084_eotf(x) * 10000 for x in maxrgb_pq_values]
+        HDRFALL = [awf.st2084_eotf(x) * 10000 for x in fall_pq_values]
+
 
         lightLevel = [HDRMax, HDRFALL]
 
@@ -241,7 +242,6 @@ def HDRplot(
     legend.get_frame().set_alpha(None)
     for line in legend.get_lines():
         line.set_linewidth(2.0)
-    # xmin, xmax = ax.get_xlim()
     plt.text(0, 1.020, subTitleHDR2,ha='left', va='bottom',transform=ax.transAxes,fontsize=12)
     plt.text(0, 1.070, subTitleHDR1,ha='left', va='bottom',transform=ax.transAxes,fontsize=12)
     plt.text(1, 1.020, subTitleDV2,ha='right', va='bottom',transform=ax.transAxes,fontsize=12)
