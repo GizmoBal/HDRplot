@@ -31,7 +31,6 @@ def HDRplot(
     In case of a DV P5 file, the clip will be first tonemapped to HDR.
     At first run on a file, the CLL/FALL values of each frame are measured (can take several hours) and stored
     in a .json file, to be possibly reused.
-    Can also plot the L1 metadata contained in the DoVi RPU file.
 
     :param path: relative path to the video file (accepts absolute path)
     :param fileIdentifier: tag for the filenames lightLevel-tag.json and HDRplot-tag.png
@@ -67,23 +66,23 @@ def HDRplot(
     subTitleDV2 = None
 
     hdrFormat = media_info.video_tracks[0].hdr_format
-    if hdrFormat != "Dolby Vision / SMPTE ST 2086" and hdrFormat != "Dolby Vision" and hdrFormat != "SMPTE ST 2086":
+    if "SMPTE ST 20" not in hdrFormat and "Dolby Vision" not in hdrFormat:
         print(f"{Fore.RED}HDR format not recognized.{Style.RESET_ALL}")
         return
-    if hdrFormat == "Dolby Vision / SMPTE ST 2086" or hdrFormat == "SMPTE ST 2086":
+    if "SMPTE ST 20" in hdrFormat:
         mdcp = media_info.video_tracks[0].mastering_display_color_primaries
         mdlMin = media_info.video_tracks[0].mastering_display_luminance[5:11]
         mdlMax = media_info.video_tracks[0].mastering_display_luminance[24:28]
-    if hdrFormat == "Dolby Vision / SMPTE ST 2086" or hdrFormat == "Dolby Vision":
+    if "Dolby Vision" in hdrFormat:
         command = ['ffmpeg -i ' + "'" + videoFile + "'" + ' -c:v copy -bsf:v hevc_mp4toannexb -f hevc - | dovi_tool extract-rpu -o RPU-temp.bin -']
         subprocess.run(command, shell=True)
         result = subprocess.run('dovi_tool info -s RPU-temp.bin', stdout=subprocess.PIPE, shell=True)
         doviSummary = [x.strip() for x in result.stdout.decode().split('\n')]
-        if L1:
-            subprocess.run('dovi_tool export -i RPU-temp.bin -d all=RPU-temp.json', shell=True)
-            with open('RPU-temp.json') as file:
-                RPU = json.load(file)
-            subprocess.run('rm RPU-temp.json', shell=True)
+        # if L1:
+        #     subprocess.run('dovi_tool export -i RPU-temp.bin -d all=RPU-temp.json', shell=True)
+        #     with open('RPU-temp.json') as file:
+        #         RPU = json.load(file)
+        #     subprocess.run('rm RPU-temp.json', shell=True)
         subprocess.run('rm RPU-temp.bin', shell=True)
         for line in doviSummary:
             if 'RPU mastering display' in line:
