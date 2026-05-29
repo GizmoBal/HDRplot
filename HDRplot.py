@@ -153,13 +153,12 @@ def HDRplot(
         # No json file containing the lightLevel data. We have to measure.
         if hdrFormat == hdrFormat == "Dolby Vision":
             # DoVi P5 video. We have to tonemap to HDR before measuring.
-            HDRclip = core.std.SetFrameProp(HDRclip, prop="_ColorRange", intval=0)
+            HDRclip = core.std.SetFrameProp(HDRclip, prop="_Range", intval=1)
             HDRclip = awf.Depth(HDRclip, 16)
-            HDRclip = core.resize.Bicubic(HDRclip, format=vs.YUV444P16)
             HDRclip = core.placebo.Tonemap(HDRclip, src_csp = 3, dst_csp = 1)
+            HDRclip = core.std.SetFrameProps(HDRclip, _Primaries=9, _Transfer=16, _Matrix=9)
             HDRclip = core.resize.Spline36(HDRclip, range_s="limited", range_in_s="full", dither_type="error_diffusion")
             HDRclip = awf.Depth(HDRclip, 10)
-            HDRclip = core.std.SetFrameProps(HDRclip, _ColorRange=1, _Primaries=9, _Transfer=16, _Matrix=9)
 
         #------------------------------------------------------------#
         # Extract HDR data from clip and store them in a double list #
