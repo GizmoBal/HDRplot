@@ -12,7 +12,7 @@ you sometimes need to measure them. The function `measure_hdr10_content_light_le
 
 ## Requirements
 
-This script needs a working installation of `VapourSynth` with the `ffms2` indexer. It also requires to have compiled the `vs-placebo` plugin with option `dovi`. Finally, `ffmpeg`, `dovi_tool` and `mediainfo` must be on path.
+This script needs a working installation of `VapourSynth` with the `ffms2` indexer. It also requires the plugins `vs-placebo` and `vs-nlq`. Finally, `ffmpeg`, `dovi_tool` and `mediainfo` must be on path.
 
 
 ## Features
