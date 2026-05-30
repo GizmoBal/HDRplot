@@ -17,6 +17,7 @@ def HDRplot(
     path: str,
     fileIdentifier: str = "DEFAULT",
     title: str = None,
+    fel: str = None,
     left: int = 0,
     right: int = 0,
     top: int = 0,
@@ -35,6 +36,7 @@ def HDRplot(
     :param path: relative path to the video file (accepts absolute path)
     :param fileIdentifier: tag for the filenames lightLevel-tag.json and HDRplot-tag.png
     :param title: optional title for the plot. If missing a default title with the name of the video file will be used
+    :param fel: optional path to the video file containing the fel for the cases where it should be baked
     :param left: crop value
     :param right: crop value
     :param top: crop value
@@ -54,6 +56,11 @@ def HDRplot(
     if not os.path.exists(videoFile):
         print(f"{Fore.RED}Video file{Style.RESET_ALL}  {path} {Fore.RED}not found.{Style.RESET_ALL}")
         return
+    if fel is not None:
+        felFile = os.path.abspath(fel)
+        if not os.path.exists(felFile):
+            print(f"{Fore.RED}FEL file{Style.RESET_ALL}  {path} {Fore.RED}not found.{Style.RESET_ALL}")
+            return
 
     media_info = MediaInfo.parse(videoFile)
     mdcp = None
@@ -128,6 +135,10 @@ def HDRplot(
 
     if title is None:
         title = "HDR grade: " + path
+
+    if fel is not None:
+        el = core.ffms2.Source(felFile)
+        src= awf.MapDolbyVision(src, el)
 
     HDRclip = core.std.Crop(src, left=left, right=right, top=top, bottom=bottom)
 
